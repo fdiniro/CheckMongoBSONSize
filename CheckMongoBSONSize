@@ -28,16 +28,17 @@ do
    # I'm too lazy to try to avoid to mess up with " and ' so I'm preparing the query in a couple of step
    query="Object.bsonsize(db.templateSites.findOne({'templateId':'$ID'}))"
    query="mongo msc --quiet --eval \"$query\""
-   
+
    # Get the BSON size
    size=$(docker exec -ti $mongocontainer sh -c "$query")
    size=${size//[^[:digit:].-]/}
-   
+   sizek=$(( $size/1024 ))
+
    # Calculate percentage over $maxSize
    percent=$(( $size*100/$maxSize ))
-   
+
    # Print results
-   printf "%-80s  %-10s  " "Size of templateSite $ID is: " "$size"
+   printf "%-80s  %-10s " "Size of templateSite $ID is: " "$sizek KB"
    printf %.1f "$percent"
    echo "%"
 done
